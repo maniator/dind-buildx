@@ -20,6 +20,7 @@ on:
 jobs:
   snyk:
     runs-on: ubuntu-latest
+    environment: Snyk
     steps:
     - uses: actions/checkout@v2
     - name: Build a Docker image
