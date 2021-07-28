@@ -1,7 +1,7 @@
 FROM docker:latest
 
 ENV DOCKER_BUILDKIT=1 \
-    BUILDX_VERSION=0.5.1
+    BUILDX_VERSION=0.6.0
 
 ARG BUILDX_URL="https://github.com/docker/buildx/releases/download/v${BUILDX_VERSION}/buildx-v${BUILDX_VERSION}.linux-amd64"
 RUN mkdir -p ~/.docker && echo '{"experimental": "enabled"}' > ~/.docker/config.json \
