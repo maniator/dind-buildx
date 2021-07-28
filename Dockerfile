@@ -1,12 +1,15 @@
-FROM docker:latest
+FROM docker:latest as buildx_image
 
-ENV DOCKER_BUILDKIT=1 \
-    BUILDX_VERSION=0.6.0
-
+ARG HOME=/root
+ARG BUILDX_VERSION=0.6.0
 ARG BUILDX_URL="https://github.com/docker/buildx/releases/download/v${BUILDX_VERSION}/buildx-v${BUILDX_VERSION}.linux-amd64"
-RUN mkdir -p ~/.docker && echo '{"experimental": "enabled"}' > ~/.docker/config.json \
-    && mkdir -p $HOME/.docker/cli-plugins/ && wget -O $HOME/.docker/cli-plugins/docker-buildx $BUILDX_URL \
-    && chmod a+x $HOME/.docker/cli-plugins/docker-buildx
+
+ENV DOCKER_CLI_EXPERIMENTAL="enabled"
+
+WORKDIR $HOME/.docker/cli-plugins
+
+RUN wget -O ./docker-buildx $BUILDX_URL \
+    && chmod a+x ./docker-buildx
 
 ENTRYPOINT [ "/usr/local/bin/docker" , "buildx"]
 
