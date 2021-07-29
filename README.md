@@ -12,3 +12,9 @@ docker run --rm \
 Which will build the Dockerfile in the current directory
 
 Same with any [docker buildx](https://docs.docker.com/engine/reference/commandline/buildx/) commands
+
+
+[![Snyk Container](https://github.com/maniator/dind-buildx/actions/workflows/snyk-container-analysis.yml/badge.svg)](https://github.com/maniator/dind-buildx/actions/workflows/snyk-container-analysis.yml)
+[![Docker](https://github.com/maniator/dind-buildx/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/maniator/dind-buildx/actions/workflows/docker-publish.yml)
+
+[![DockerHub Badge](http://dockeri.co/image/maniator/dind-buildx)](https://hub.docker.com/r/maniator/dind-buildx/)
