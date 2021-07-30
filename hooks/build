@@ -1,0 +1,43 @@
+#!/bin/sh -e
+
+WORKDIR=$PWD
+IMAGE_NAME=${IMAGE_NAME:-maniator/docker-with-buildx}
+DOCKERFILE_PATH=${DOCKERFILE_PATH:-$WORKDIR/Dockerfile}
+DOCKER_TAG=${DOCKER_TAG:-latest}
+DOCKER_CONFIG=${DOCKER_CONFIG:-$WORKDIR/.docker}
+BUILDX_DIR=$DOCKER_CONFIG/buildx
+
+run_docker () {
+    mkdir -p $BUILDX_DIR
+    docker run --rm \
+        -e DOCKER_TLS_CERTDIR=/certs \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        -v $BUILDX_DIR:/env_configs/.docker/buildx \
+        -v $WORKDIR:$WORKDIR -w $WORKDIR maniator/dind-buildx "$@"
+}
+
+run_build () {
+    run_docker build -f $DOCKERFILE_PATH \
+        -t $IMAGE_NAME \
+        --target=buildx_image --load \
+        --builder=hub_builder2 . "$@"
+}
+
+create_builder () {
+    run_docker create --driver docker-container \
+        --name hub_builder2 --use --append
+}
+
+create_builder
+
+if [ "$DOCKER_TAG" = latest -o "$SOURCE_BRANCH" = new-hub-build ]
+then
+    run_build
+else
+    BUILDX_VERSION="$(echo $DOCKER_TAG | cut -d '-' -f 2)"
+    DOCKER_VERSION="$(echo $DOCKER_TAG | cut -d '-' -f 1)"
+
+    run_build \
+        --build-arg BUILDX_VERSION=$BUILDX_VERSION \
+        --build-arg DOCKER_VERSION=$DOCKER_VERSION
+fi
