@@ -1,11 +1,11 @@
-ARG DOCKER_CONFIG=/env_configs/.docker
 ARG BUILDX_VERSION=0.6.0
 
 FROM docker/buildx-bin:$BUILDX_VERSION as buildx_bin
 
 FROM docker:latest as buildx_image
 
-ARG DOCKER_CONFIG
+ARG DOCKER_CONFIG=/env_configs/.docker
+
 ENV DOCKER_CONFIG=$DOCKER_CONFIG \
     DOCKER_CLI_EXPERIMENTAL="enabled"
 
