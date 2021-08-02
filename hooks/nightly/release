@@ -4,7 +4,7 @@ IMAGE_NAME="$REPO:docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION"
 LABELED_IMAGE="$REPO:$DOCKER_LABEL"
 TAR_LOCATION="./.docker/docker-with-buildx.tar"
 
-docker images
+mkdir -p ./.docker
 docker save "$IMAGE_NAME" -o "$TAR_LOCATION"
 
 if gh release create -n "" -t "" "v$DOCKER_VERSION-$BUILDX_VERSION";
