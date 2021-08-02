@@ -1,0 +1,14 @@
+#!/bin/bash -x
+
+BUILDX_VERSION=$(curl -s 'https://api.github.com/repos/docker/buildx/releases' | jq -r '.[0].tag_name' | sed -e "s/^v//")
+DOCKER_VERSION=$(curl -s 'https://api.github.com/repos/moby/moby/releases' | jq -r '.[0].tag_name' | sed -e "s/^v//")
+DOCKER_LABEL=latest
+
+if [ "$GITHUB_EVENT" = "schedule" ]
+then 
+    DOCKER_LABEL="nightly" 
+fi
+
+echo "::set-output name=buildx_version::$BUILDX_VERSION"
+echo "::set-output name=docker_version::$DOCKER_VERSION"
+echo "::set-output name=docker_label::$DOCKER_LABEL"

@@ -1,0 +1,8 @@
+#!/bin/bash -x
+
+IMAGE_NAME="ghcr.io/maniator/dind-buildx:docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION"
+DOCKERFILE_PATH="$PWD/Dockerfile"
+
+export IMAGE_NAME DOCKERFILE_PATH
+# shellcheck disable=SC1091
+. "$PWD/hooks/build"

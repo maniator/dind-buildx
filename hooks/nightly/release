@@ -1,0 +1,14 @@
+#!/bin/bash -x
+IMAGE_NAME="ghcr.io/$GITHUB_REPO:docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION"
+LABELED_IMAGE="ghcr.io/$GITHUB_REPO:$DOCKER_LABEL"
+
+gh release create -n "" -t "" "v$DOCKER_VERSION-$BUILDX_VERSION"
+
+docker images
+docker save "$IMAGE_NAME" -o ./.docker/docker-with-buildx.tar
+gh release upload "v$DOCKER_VERSION-$BUILDX_VERSION" ./.docker/docker-with-buildx.tar
+
+docker tag "$IMAGE_NAME" "$LABELED_IMAGE"
+docker push "$IMAGE_NAME" "$LABELED_IMAGE"
+
+exit 0

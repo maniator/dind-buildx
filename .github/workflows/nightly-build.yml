@@ -2,17 +2,40 @@ name: Nightly Build
 
 on:
   push:
-    branches: [ main ]
+    branches: 
+      - main
   schedule:
     - cron: '0 0 * * *'
 
 jobs:
   nightly:
-    name: tag update
+    name: tags
     runs-on: ubuntu-latest
     steps:
+      - name: Login to GHCR
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: actions/checkout@v1
-      - name: update_tags
-        run: "./hooks/nightly/build_check"
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: "./hooks/nightly/set_tags"
+        id: tags
+        env:
+          GITHUB_EVENT: ${{ github.event_name }}
+
+      - name: build
+        run: "./hooks/nightly/build"
+        env:
+          BUILDX_VERSION: ${{ steps.tags.outputs.buildx_version }}
+          DOCKER_VERSION: ${{ steps.tags.outputs.docker_version }}
+
+      - name: release
+        run: "./hooks/nightly/release"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+          DOCKER_LABEL: ${{ steps.tags.outputs.docker_label }}
+          BUILDX_VERSION: ${{ steps.tags.outputs.buildx_version }}
+          DOCKER_VERSION: ${{ steps.tags.outputs.docker_version }}

@@ -1,8 +1,0 @@
-#!/bin/bash -ex
-
-BUILDX_VERSION=$(curl -s 'https://api.github.com/repos/docker/buildx/releases' | jq -r '.[0].tag_name' | sed -e "s/^v//")
-DOCKER_VERSION=$(curl -s 'https://api.github.com/repos/moby/moby/releases' | jq -r '.[0].tag_name' | sed -e "s/^v//")
-
-gh release create -n "" -t "" \
-    "v$DOCKER_VERSION-$BUILDX_VERSION" \
-    || exit 0
