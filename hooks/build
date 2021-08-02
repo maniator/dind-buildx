@@ -31,5 +31,5 @@ else
 
     export -f run_build run_docker 
     export BUILDX_DIR WORKDIR IMAGE_NAME DOCKERFILE_PATH
-    echo "$build_tags" | xargs -n 2 -I '{}' -t bash -c "run_build {}"
+    echo "$build_tags" | xargs -n 10 -I '{}' -t bash -c "run_build {}"
 fi
