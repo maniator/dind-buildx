@@ -27,9 +27,9 @@ if [ "$DOCKER_TAG" = latest ] || [ "$DOCKER_TAG" = this ]; then
     run_build --build-arg DOCKER_VERSION=latest --build-arg BUILDX_VERSION=latest
 else
     grep_tags=$(echo "$DOCKER_TAG" | grep -Eo '(docker_|buildx_)?(([0-9]+\.){2}[0-9]+)')
-    build_tags=$(echo "$grep_tags" | xargs -I '{}' -t sh -c "./hooks/build_tags '{}'" )
+    build_tags=$(echo "$grep_tags" | xargs -I '{}' -t sh -c "./hooks/build_tags '{}'" | tr -s '\n' ' ')
 
     export -f run_build run_docker 
     export BUILDX_DIR WORKDIR IMAGE_NAME DOCKERFILE_PATH
-    echo "$build_tags" | xargs -n 10 -I '{}' -t bash -c "run_build {}"
+    echo "$build_tags" | xargs -I '{}' -t bash -c "run_build {}"
 fi
