@@ -1,0 +1,18 @@
+name: Nightly Build
+
+on:
+  push:
+    branches: [ main, build-nightly-action ]
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  nightly:
+    name: tag update
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: update_tags
+        run: "./hooks/nightly/build_check"
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
