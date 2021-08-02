@@ -1,6 +1,7 @@
 #!/bin/bash -x
 
-IMAGE_NAME="ghcr.io/maniator/dind-buildx:docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION"
+DOCKER_TAG="docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION"
+IMAGE_NAME="ghcr.io/maniator/dind-buildx:$DOCKER_TAG"
 DOCKERFILE_PATH="$PWD/Dockerfile"
 
 export IMAGE_NAME DOCKERFILE_PATH
