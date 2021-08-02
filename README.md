@@ -37,6 +37,6 @@ docker run --rm \
 ```
 
 [![Snyk Container](https://github.com/maniator/dind-buildx/actions/workflows/snyk-container-analysis.yml/badge.svg)](https://github.com/maniator/dind-buildx/actions/workflows/snyk-container-analysis.yml)
-[![Docker](https://github.com/maniator/dind-buildx/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/maniator/dind-buildx/actions/workflows/docker-publish.yml)
+[![Docker](https://github.com/maniator/dind-buildx/actions/workflows/nightly-build.yml/badge.svg)](https://github.com/maniator/dind-buildx/actions/workflows/nightly-build.yml)
 
 [![DockerHub Badge](http://dockeri.co/image/maniator/docker-with-buildx)](https://hub.docker.com/r/maniator/docker-with-buildx/)
