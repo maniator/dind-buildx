@@ -22,7 +22,7 @@ if [[ -z "${BUILDX_VERSION}" ]]; then
         grep_tags=$(echo "$DOCKER_TAG" | grep -Eo '(docker_|buildx_)?(([0-9]+\.){2}[0-9]+)')
         build_tags=$(echo "$grep_tags" | xargs -I '{}' -t sh -c "./hooks/build_tags '{}'" | tr -s '\n' ' ')
 
-        export -f run_build run_docker 
+        export -f run_build 
         export BUILDX_DIR WORKDIR IMAGE_NAME DOCKERFILE_PATH
         echo "$build_tags" | xargs -I '{}' -t bash -c "run_build {}"
     fi
