@@ -1,8 +1,11 @@
-ARG BUILDX_VERSION=0.6.0
+# syntax=docker/dockerfile:1.2
+
+ARG BUILDX_VERSION=latest
+ARG DOCKER_VERSION=latest
 
 FROM docker/buildx-bin:$BUILDX_VERSION as buildx_bin
 
-FROM docker:latest as buildx_image
+FROM docker:$DOCKER_VERSION as buildx_image
 
 ARG DOCKER_CONFIG=/env_configs/.docker
 
