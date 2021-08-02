@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1.2
+
 ARG BUILDX_VERSION=latest
 ARG DOCKER_VERSION=latest
 
