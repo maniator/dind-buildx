@@ -32,8 +32,8 @@ create_builder
 if [ "$DOCKER_TAG" = latest ] || [ "$DOCKER_TAG" = this ]; then
     run_build
 else
-    BUILDX_VERSION=$(echo "$DOCKER_TAG" | cut -d '-' -f 2)
-    DOCKER_VERSION=$(echo "$DOCKER_TAG" | cut -d '-' -f 1)
+    BUILDX_VERSION=$(echo "$SOURCE_BRANCH" | cut -d '-' -f 2)
+    DOCKER_VERSION=$(echo "$SOURCE_BRANCH" | cut -d '-' -f 1)
 
     run_build \
         --build-arg BUILDX_VERSION="$BUILDX_VERSION" \
