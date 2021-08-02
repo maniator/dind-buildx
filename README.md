@@ -36,6 +36,6 @@ docker run --rm \
     --builder=my_builder build .
 ```
 
-[![Docker](https://github.com/maniator/dind-buildx/actions/workflows/nightly-build.yml/badge.svg)](https://github.com/maniator/dind-buildx/actions/workflows/nightly-build.yml)
+[![Docker](https://github.com/maniator/dind-buildx/actions/workflows/docker-build.yml/badge.svg)](https://github.com/maniator/dind-buildx/actions/workflows/docker-build.yml)
 
 [![DockerHub Badge](http://dockeri.co/image/maniator/docker-with-buildx)](https://hub.docker.com/r/maniator/docker-with-buildx/)

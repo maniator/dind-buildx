@@ -3,12 +3,25 @@
 BUILDX_VERSION=$(curl -s 'https://api.github.com/repos/docker/buildx/releases' | jq -r '.[0].tag_name' | sed -e "s/^v//")
 DOCKER_VERSION=$(curl -s 'https://api.github.com/repos/moby/moby/releases' | jq -r '.[0].tag_name' | sed -e "s/^v//")
 DOCKER_LABEL=latest
+REPO="ghcr.io/$GITHUB_REPO"
+DOCKER_TAG="docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION"
+IMAGE_NAME="$REPO:$DOCKER_TAG"
 
 if [ "$GITHUB_EVENT" = "schedule" ]
 then 
     DOCKER_LABEL="nightly" 
 fi
 
+LABELED_IMAGE="$REPO:$DOCKER_LABEL"
+
 echo "::set-output name=buildx_version::$BUILDX_VERSION"
 echo "::set-output name=docker_version::$DOCKER_VERSION"
-echo "::set-output name=docker_label::$DOCKER_LABEL"
+echo "::set-output name=image_name::$IMAGE_NAME"
+echo "::set-output name=labeled_image::$LABELED_IMAGE"
+echo "::set-output name=docker_tag::$DOCKER_TAG"
+echo "::set-output name=repo::$REPO"
+
+# set up docker buildx driver
+docker buildx create --use \
+    --driver docker-container \
+    --name=build_hook --append
