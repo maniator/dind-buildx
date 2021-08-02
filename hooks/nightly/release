@@ -11,6 +11,7 @@ if gh release create -n "" -t "" "v$DOCKER_VERSION-$BUILDX_VERSION";
 then
     gh release upload "v$DOCKER_VERSION-$BUILDX_VERSION" "$TAR_LOCATION#Docker Image"
 fi
+
 docker tag "$IMAGE_NAME" "$LABELED_IMAGE"
 docker push --all-tags "$REPO"
 

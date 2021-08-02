@@ -7,19 +7,11 @@ DOCKER_TAG=${DOCKER_TAG:-latest}
 DOCKER_CONFIG=${DOCKER_CONFIG:-$WORKDIR/.docker}
 BUILDX_DIR=$DOCKER_CONFIG/buildx
 
-run_docker () {
-    mkdir -p "$BUILDX_DIR"
-    docker run --rm \
-        -e DOCKER_TLS_CERTDIR=/certs \
-        -v /var/run/docker.sock:/var/run/docker.sock \
-        -v "$BUILDX_DIR":/env_configs/.docker/buildx \
-        -v "$WORKDIR":"$WORKDIR" -w "$WORKDIR" maniator/docker-with-buildx "$@"
-}
-
 run_build () {
-    run_docker build -f "$DOCKERFILE_PATH" \
+    DOCKER_BUILDKIT=1 \
+    docker build -f "$DOCKERFILE_PATH" \
         -t "$IMAGE_NAME" --target=buildx_image \
-        --load . "$@"
+        --progress=plain . "$@"
 }
 
 if [[ -z "${BUILDX_VERSION}" ]]; then
