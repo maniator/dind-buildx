@@ -7,8 +7,10 @@ TAR_LOCATION="./.docker/docker-with-buildx.tar"
 docker images
 docker save "$IMAGE_NAME" -o "$TAR_LOCATION"
 
-gh release create -n "" -t "" "v$DOCKER_VERSION-$BUILDX_VERSION" "$TAR_LOCATION#Docker Image"
-
+if gh release create -n "" -t "" "v$DOCKER_VERSION-$BUILDX_VERSION";
+then
+    gh release upload "v$DOCKER_VERSION-$BUILDX_VERSION" "$TAR_LOCATION#Docker Image"
+fi
 docker tag "$IMAGE_NAME" "$LABELED_IMAGE"
 docker push --all-tags "$REPO"
 
