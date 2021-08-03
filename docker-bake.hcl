@@ -20,9 +20,6 @@ target "build" {
     LABELED_IMAGE,
     IMAGE_NAME
   ]
-  cache-to = [
-    IMAGE_NAME
-  ]
   args = {
     DOCKER_VERSION: DOCKER_VERSION,
     BUILDX_VERSION: BUILDX_VERSION
