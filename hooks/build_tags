@@ -5,4 +5,5 @@ PASSED_TAG="$1"
 type=$(echo "$PASSED_TAG" | grep -Eo '(docker|buildx)' | tr '[:lower:]' '[:upper:]' | awk '{ printf $1"_VERSION" }' )
 version=$(echo "$PASSED_TAG" | grep -Eo '(([0-9]+\.){2}[0-9]+)')
 
-echo "--build-arg='$type=$version' "
+echo "$type=$version"
+echo "export $type"

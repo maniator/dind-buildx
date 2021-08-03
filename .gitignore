@@ -2,3 +2,5 @@
 node_modules
 .idea
 .docker
+.devcontainer
+.env

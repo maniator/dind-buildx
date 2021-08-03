@@ -1,0 +1,90 @@
+name: Build and Release
+
+on:
+  push:
+    branches: 
+      - main
+  pull_request:
+    branches: 
+      - main
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  build:
+    name: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.3.4
+
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ github.repository }}
+          tags: |
+            type=edge,enable=true,priority=700,prefix=,suffix=,branch=$repo.default_branch
+            type=schedule,pattern=nightly
+            type=ref,event=branch
+            type=sha
+
+      - name: Login to GHCR
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - run: ./hooks/nightly/set_tags
+        id: tags
+        env:
+          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_EVENT: ${{ github.event_name }}
+          DOCKER_BAKE_FILE: ${{ steps.meta.outputs.bake-file }}
+
+      - name: build
+        uses: docker/bake-action@v1.5.0
+        with:
+          files: |
+            ./docker-bake.hcl
+            ${{ steps.meta.outputs.bake-file }}
+          builder: build_hook
+          targets: build
+          push: ${{ github.event_name != 'pull_request' }}
+          pull: true
+        env:
+          BUILDX_VERSION: ${{ steps.tags.outputs.buildx_version }}
+          DOCKER_VERSION: ${{ steps.tags.outputs.docker_version }}
+          LABELED_IMAGE: ${{ steps.tags.outputs.labeled_image }}
+          DOCKER_TAG: ${{ steps.tags.outputs.docker_tag }}
+          IMAGE_NAME: ${{ steps.tags.outputs.image_name }}
+          REPO: ${{ steps.tags.outputs.repo }}
+
+  release:
+    name: release
+    runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
+    needs: build
+    steps:
+      - uses: actions/checkout@v2.3.4
+
+      - run: ./hooks/nightly/set_tags
+        id: tags
+        env:
+          GITHUB_REPO: ${{ github.repository }}
+          GITHUB_EVENT: ${{ github.event_name }}
+
+      - name: Login to GHCR
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: release
+        run: ./hooks/nightly/release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IMAGE_NAME: ${{ steps.tags.outputs.image_name }}
+          BUILDX_VERSION: ${{ steps.tags.outputs.buildx_version }}
+          DOCKER_VERSION: ${{ steps.tags.outputs.docker_version }}
