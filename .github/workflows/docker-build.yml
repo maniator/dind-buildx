@@ -58,7 +58,7 @@ jobs:
           LABELED_IMAGE: ${{ steps.tags.outputs.labeled_image }}
           DOCKER_TAG: ${{ steps.tags.outputs.docker_tag }}
           IMAGE_NAME: ${{ steps.tags.outputs.image_name }}
-          REPO: ${{ steps.tags.outputs.repo }}
+          DOCKER_REPO: ${{ steps.tags.outputs.docker_repo }}
 
   release:
     name: release

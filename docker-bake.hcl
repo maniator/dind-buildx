@@ -3,7 +3,7 @@ variable "IMAGE_NAME" {}
 variable "LABELED_IMAGE" {}
 variable "DOCKER_VERSION" { default="latest" }
 variable "BUILDX_VERSION" { default="latest" }
-variable "REPO" { default="" }
+variable "DOCKER_REPO" { default="" }
 
 group "default" {
     targets = ["build"]
@@ -16,7 +16,7 @@ target "build" {
   inherits = ["docker-metadata-action"]
   dockerfile = "Dockerfile"
   cache-from = [
-    "${REPO}:latest",
+    "${DOCKER_REPO}:latest",
     LABELED_IMAGE,
     IMAGE_NAME
   ]
