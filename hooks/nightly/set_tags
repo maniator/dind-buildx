@@ -24,4 +24,5 @@ echo "::set-output name=repo::$REPO"
 # set up docker buildx driver
 docker buildx create --use \
     --driver docker-container \
-    --name=build_hook --append
+    --name=build_hook --append \
+    --platform linux/arm64,linux/arm64/v8

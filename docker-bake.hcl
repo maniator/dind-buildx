@@ -11,22 +11,22 @@ group "default" {
 
 target "docker-metadata-action" {}
 
-target "root" {
+target "build" {
   context = "."
+  inherits = ["docker-metadata-action"]
   dockerfile = "Dockerfile"
   cache-from = [
     "${REPO}:latest",
     LABELED_IMAGE,
     IMAGE_NAME
   ]
+  cache-to = [
+    IMAGE_NAME
+  ]
   args = {
     DOCKER_VERSION: DOCKER_VERSION,
     BUILDX_VERSION: BUILDX_VERSION
   }
-}
-
-target "build" {
-  inherits = ["docker-metadata-action", "root"]
   platforms = [
     "linux/amd64",
     "linux/arm64/v8"
