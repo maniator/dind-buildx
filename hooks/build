@@ -10,12 +10,10 @@ run_build () {
 
     echo "Build information"
     docker buildx inspect --bootstrap
-    docker buildx bake -f docker-bake.hcl \
-        --builder=build_hook --pull --print "$@"
+    docker buildx bake -f docker-bake.hcl --pull --print "$@"
 
     echo "Building image"
-    docker buildx bake -f docker-bake.hcl \
-        --builder=build_hook --pull "$@"
+    docker buildx bake -f docker-bake.hcl --pull "$@"
 }
 
 # "this" implies a pull request test build
