@@ -48,7 +48,6 @@ jobs:
           files: |
             ./docker-bake.hcl
             ${{ steps.meta.outputs.bake-file }}
-          builder: build_hook
           targets: build
           push: ${{ github.event_name != 'pull_request' }}
           pull: true
