@@ -1,17 +1,19 @@
 #!/bin/bash -ex
 
-WORKDIR=$PWD
 REPO=${REPO:-maniator/docker-with-buildx}
 IMAGE_NAME=${IMAGE_NAME:-maniator/docker-with-buildx}
-DOCKERFILE_PATH=${DOCKERFILE_PATH:-$WORKDIR/Dockerfile}
 DOCKER_TAG=${DOCKER_TAG:-latest}
-DOCKER_CONFIG=${DOCKER_CONFIG:-$WORKDIR/.docker}
-BUILDX_DIR=$DOCKER_CONFIG/buildx
 
 run_build () {
     docker buildx create --use \
         --driver docker-container \
         --name=build_hook --append
+
+    echo "Build information"
+    docker buildx bake -f docker-bake.hcl \
+        --builder=build_hook --pull --print "$@"
+
+    echo "Building image"
     docker buildx bake -f docker-bake.hcl \
         --builder=build_hook --pull "$@"
 }
@@ -27,13 +29,14 @@ else
         DOCKER_VERSION=latest
         BUILDX_VERSION=latest
         export DOCKER_VERSION BUILDX_VERSION DOCKER_TAG REPO
+        export WORKDIR IMAGE_NAME DOCKER_TAG REPO
         run_build --push
     else
         grep_tags=$(echo "$DOCKER_TAG" | grep -Eo '(docker_|buildx_)?(([0-9]+\.){2}[0-9]+)')
         build_tags=$(echo "$grep_tags" | xargs -I '{}' -t sh -c "./hooks/build_tags '{}'")
 
         export -f run_build 
-        export BUILDX_DIR WORKDIR IMAGE_NAME DOCKERFILE_PATH DOCKER_TAG REPO
+        export WORKDIR IMAGE_NAME DOCKER_TAG REPO
         echo "$build_tags" > ./.env 
         # shellcheck disable=SC1091
         source ./.env

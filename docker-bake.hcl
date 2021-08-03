@@ -35,7 +35,4 @@ target "build" {
     LABELED_IMAGE,
     IMAGE_NAME
   ]
-  cache-to = [
-    IMAGE_NAME
-  ]
 }
