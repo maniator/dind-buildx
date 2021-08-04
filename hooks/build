@@ -1,13 +1,11 @@
 #!/bin/bash -ex
+
 DOCKER_REPO=${DOCKER_REPO:-maniator/docker-with-buildx}
 DOCKER_TAG=${DOCKER_TAG:-latest}
 IMAGE_NAME=${IMAGE_NAME:-"$DOCKER_REPO:$DOCKER_TAG"}
 
-run_build () {
-    echo "Building image"
-    docker buildx bake -f docker-bake.hcl --print
-    docker buildx bake -f docker-bake.hcl "$@"
-}
+alias run_build="docker buildx bake -f docker-bake.hcl --pull --no-cache"
+shopt -s expand_aliases
 
 # "this" implies a pull request test build
 if [ "$DOCKER_TAG" = this ]; then
