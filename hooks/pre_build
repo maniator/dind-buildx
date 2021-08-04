@@ -5,3 +5,6 @@ docker buildx create --use --driver docker-container
 
 docker buildx ls
 docker buildx inspect --bootstrap
+
+# remove old image
+docker image rm "$IMAGE_NAME"
