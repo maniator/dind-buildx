@@ -7,8 +7,6 @@ run_build () {
     # Install QEMU for multi arc builds
     docker run --rm --privileged \
         multiarch/qemu-user-static:register
-    docker run --privileged --rm \
-        tonistiigi/binfmt --install all
 
     # Create builder container
     docker buildx create --use \

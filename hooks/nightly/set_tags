@@ -4,14 +4,22 @@ BUILDX_VERSION=$(curl -s 'https://api.github.com/repos/docker/buildx/releases' |
 DOCKER_VERSION=$(curl -s 'https://api.github.com/repos/moby/moby/releases' | jq -r '.[0].tag_name' | sed -e "s/^v//")
 DOCKER_LABEL=latest
 DOCKER_REPO="ghcr.io/$GITHUB_REPO"
-DOCKER_TAG="docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION"
-IMAGE_NAME="$DOCKER_REPO:$DOCKER_TAG"
 
 if [ "$GITHUB_EVENT" = "schedule" ]
 then 
     DOCKER_LABEL="nightly" 
 fi
 
+if docker pull "docker:$DOCKER_VERSION";
+then
+    echo "docker:$DOCKER_VERSION exists"
+else
+    echo "docker:$DOCKER_VERSION not now exist, pulling latest instead"
+    DOCKER_VERSION=latest
+fi
+
+DOCKER_TAG="docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION"
+IMAGE_NAME="$DOCKER_REPO:$DOCKER_TAG"
 LABELED_IMAGE="$DOCKER_REPO:$DOCKER_LABEL"
 
 echo "::set-output name=buildx_version::$BUILDX_VERSION"
