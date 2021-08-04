@@ -4,3 +4,4 @@ node_modules
 .docker
 .devcontainer
 .env
+qemu-*

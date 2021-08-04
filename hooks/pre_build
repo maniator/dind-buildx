@@ -1,6 +1,6 @@
 #!/bin/bash -ex
 
-# Create builder container
+docker run --rm --privileged multiarch/qemu-user-static:register --reset
 docker buildx create --use --driver docker-container
 
 docker buildx ls
