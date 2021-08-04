@@ -1,7 +1,5 @@
 #!/bin/bash -ex
 
-docker run --privileged --rm tonistiigi/binfmt --install all
-
 # Create builder container
 docker buildx create --use --driver docker-container
 
