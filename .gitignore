@@ -4,4 +4,5 @@ node_modules
 .docker
 .devcontainer
 .env
-qemu-*
+tmp/
+docker-bake.ci.hcl

@@ -2,29 +2,41 @@
 
 BUILDX_VERSION=$(curl -s 'https://api.github.com/repos/docker/buildx/releases' | jq -r '.[0].tag_name' | sed -e "s/^v//")
 DOCKER_VERSION=$(curl -s 'https://api.github.com/repos/moby/moby/releases' | jq -r '.[0].tag_name' | sed -e "s/^v//")
-DOCKER_LABEL=latest
-DOCKER_REPO="ghcr.io/$GITHUB_REPO"
+DOCKER_TAG="docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION"
 
+DOCKER_LABEL=latest
 if [ "$GITHUB_EVENT" = "schedule" ]
 then 
     DOCKER_LABEL="nightly" 
 fi
 
-if docker pull "docker:$DOCKER_VERSION";
+if docker pull "docker:$DOCKER_VERSION" 2>/dev/null && docker pull "docker/buildx-bin:$BUILDX_VERSION" 2>/dev/null;
 then
-    echo "docker:$DOCKER_VERSION exists"
+    echo "docker:$DOCKER_VERSION and buildx:$BUILDX_VERSION exists"
 else
-    echo "docker:$DOCKER_VERSION not now exist, pulling latest instead"
+    echo "docker:$DOCKER_VERSION or buildx:$BUILDX_VERSION doesnt exist"
+    DOCKER_TAG=$DOCKER_LABEL
     DOCKER_VERSION=latest
+    BUILDX_VERSION=latest
 fi
 
-DOCKER_TAG="docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION"
-IMAGE_NAME="$DOCKER_REPO:$DOCKER_TAG"
-LABELED_IMAGE="$DOCKER_REPO:$DOCKER_LABEL"
+cat <<EOF > docker-bake.ci.hcl
+variable "DOCKER_META_VERSION" { default="" }
+
+group "default" {
+    targets = ["ci_build"]
+}
+
+target "ci_build" {
+  inherits = ["build", "docker-metadata-action"]
+  tags = [
+    "ghcr.io/maniator/dind-buildx:$DOCKER_TAG",
+    "ghcr.io/maniator/dind-buildx:\${DOCKER_META_VERSION}",
+    "maniator/dind-buildx:$DOCKER_TAG",
+    "maniator/docker-with-buildx:$DOCKER_LABEL"
+  ]
+}
+EOF
 
 echo "::set-output name=buildx_version::$BUILDX_VERSION"
 echo "::set-output name=docker_version::$DOCKER_VERSION"
-echo "::set-output name=image_name::$IMAGE_NAME"
-echo "::set-output name=labeled_image::$LABELED_IMAGE"
-echo "::set-output name=docker_tag::$DOCKER_TAG"
-echo "::set-output name=docker_repo::$DOCKER_REPO"
