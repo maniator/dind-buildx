@@ -15,11 +15,6 @@ target "build" {
   context = "."
   inherits = ["docker-metadata-action"]
   dockerfile = "Dockerfile"
-  cache-from = [
-    "${DOCKER_REPO}:latest",
-    LABELED_IMAGE,
-    IMAGE_NAME
-  ]
   args = {
     DOCKER_VERSION: DOCKER_VERSION,
     BUILDX_VERSION: BUILDX_VERSION
