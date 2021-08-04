@@ -1,0 +1,4 @@
+#!/bin/bash -ex
+
+# list docker images
+docker images
