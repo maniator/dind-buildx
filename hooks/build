@@ -5,8 +5,11 @@ IMAGE_NAME=${IMAGE_NAME:-"$DOCKER_REPO:$DOCKER_TAG"}
 
 run_build () {
     # Install QEMU for multi arc builds
+    docker run --rm --privileged \
+        multiarch/qemu-user-static:register
     docker run --privileged --rm \
         tonistiigi/binfmt --install all
+
     # Create builder container
     docker buildx create --use \
         --driver docker-container
@@ -36,7 +39,6 @@ else
         grep_tags=$(echo "$DOCKER_TAG" | grep -Eo '(docker_|buildx_)?(([0-9]+\.){2}[0-9]+)')
         build_tags=$(echo "$grep_tags" | xargs -I '{}' -t sh -c "./hooks/build_tags '{}'")
 
-        export -f run_build 
         export IMAGE_NAME DOCKER_TAG DOCKER_REPO
         echo "$build_tags" > ./.env 
         # shellcheck disable=SC1091
