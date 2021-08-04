@@ -1,14 +1,8 @@
 #!/bin/bash -x
 
-if gh release create -n "" -t "" "v$DOCKER_VERSION-$BUILDX_VERSION";
+if [ "$DOCKER_VERSION" != "latest" ]
 then
-    mkdir -p ./.docker
-    TAR_LOCATION="./.docker/docker-with-buildx.tar.gz"
-
-    docker pull "$IMAGE_NAME"
-    docker save "$IMAGE_NAME" | gzip > "$TAR_LOCATION"
-
-    gh release upload "v$DOCKER_VERSION-$BUILDX_VERSION" "$TAR_LOCATION#Docker Image"
+    gh release create -n "" -t "" "v$DOCKER_VERSION-$BUILDX_VERSION"
 fi
 
 exit 0
