@@ -20,8 +20,3 @@ echo "::set-output name=image_name::$IMAGE_NAME"
 echo "::set-output name=labeled_image::$LABELED_IMAGE"
 echo "::set-output name=docker_tag::$DOCKER_TAG"
 echo "::set-output name=docker_repo::$DOCKER_REPO"
-
-# set up docker buildx driver
-docker buildx create --use \
-    --driver docker-container \
-    --platform linux/amd64,linux/arm64/v8

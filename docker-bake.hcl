@@ -21,6 +21,8 @@ target "build" {
   }
   platforms = [
     "linux/amd64",
+    equal(DOCKER_VERSION, "latest") ? "linux/arm/v6" : "",
+    equal(DOCKER_VERSION, "latest") ? "linux/arm/v7" : "",
     "linux/arm64/v8"
   ]
   tags = [ 
