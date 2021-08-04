@@ -31,8 +31,11 @@ target "ci_build" {
   inherits = ["build", "docker-metadata-action"]
   tags = [
     "ghcr.io/maniator/dind-buildx:$DOCKER_TAG",
+    "ghcr.io/maniator/dind-buildx:$DOCKER_LABEL",
     "ghcr.io/maniator/dind-buildx:\${DOCKER_META_VERSION}",
     "maniator/dind-buildx:$DOCKER_TAG",
+    "maniator/dind-buildx:$DOCKER_LABEL",
+    "maniator/docker-with-buildx:$DOCKER_TAG"
     "maniator/docker-with-buildx:$DOCKER_LABEL"
   ]
 }
