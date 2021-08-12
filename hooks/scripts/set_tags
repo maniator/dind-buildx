@@ -1,20 +1,20 @@
-#!/bin/bash -x
+#!/bin/sh -x
 
-BUILDX_VERSION=$(curl -s 'https://api.github.com/repos/docker/buildx/releases' | jq -r '.[0].tag_name' | sed -e "s/^v//")
-DOCKER_VERSION=$(curl -s 'https://api.github.com/repos/moby/moby/releases' | jq -r '.[0].tag_name' | sed -e "s/^v//")
-DOCKER_TAG="docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION"
+BUILDX_VERSION=$(curl -s 'https://api.github.com/repos/docker/buildx/releases' | jq -r '.[0].tag_name' | sed -e 's/^v//')
+DOCKER_VERSION=$(curl -s 'https://api.github.com/repos/moby/moby/releases' | jq -r '.[0].tag_name' | sed -e 's/^v//')
+DOCKER_TAG=docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION
 
 DOCKER_LABEL=latest
-if [ "$GITHUB_EVENT" = "schedule" ]
+if [ "$GITHUB_EVENT" = schedule ]
 then 
-    DOCKER_LABEL="nightly" 
+    DOCKER_LABEL=nightly
 fi
 
 if docker pull "docker:$DOCKER_VERSION" 2>/dev/null && docker pull "docker/buildx-bin:$BUILDX_VERSION" 2>/dev/null;
 then
-    echo "docker:$DOCKER_VERSION and buildx:$BUILDX_VERSION exists"
+    echo "docker:$DOCKER_VERSION and buildx:$BUILDX_VERSION exist"
 else
-    echo "docker:$DOCKER_VERSION or buildx:$BUILDX_VERSION doesnt exist"
+    echo "docker:$DOCKER_VERSION or buildx:$BUILDX_VERSION doesn't exist"
     DOCKER_TAG=$DOCKER_LABEL
     DOCKER_VERSION=latest
     BUILDX_VERSION=latest
