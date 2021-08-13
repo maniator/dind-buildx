@@ -1,8 +1,8 @@
-#!/bin/bash -x
+#!/bin/sh -x
 
-if [ "$DOCKER_VERSION" != "latest" ]
+if [ "$DOCKER_VERSION" != latest ]
 then
-    gh release create -n "" -t "" "v$DOCKER_VERSION-$BUILDX_VERSION"
+    gh release create -n '' -t '' "v$DOCKER_VERSION-$BUILDX_VERSION"
 fi
 
 exit 0
