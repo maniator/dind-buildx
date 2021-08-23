@@ -24,6 +24,7 @@ jobs:
           images: ${{ github.repository }}
           tags: |
             type=edge,enable=true,priority=700,prefix=,suffix=,branch=$repo.default_branch
+            type=schedule,pattern=latest
             type=schedule,pattern=nightly
             type=ref,event=branch
             type=sha
