@@ -5,10 +5,6 @@ DOCKER_VERSION=$(curl -s 'https://api.github.com/repos/moby/moby/releases' | jq 
 DOCKER_TAG=docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION
 
 DOCKER_LABEL=latest
-if [ "$GITHUB_EVENT" = schedule ]
-then 
-    DOCKER_LABEL=nightly
-fi
 
 if docker pull "docker:$DOCKER_VERSION" 2>/dev/null && docker pull "docker/buildx-bin:$BUILDX_VERSION" 2>/dev/null;
 then
