@@ -1,5 +1,5 @@
 // docker-bake.hcl
-variable "IMAGE_NAME" { default="docker-with-buildx:latest" }
+variable "IMAGE_NAME" { default="dind-buildx:latest" }
 variable "DOCKER_VERSION" { default="latest" }
 variable "BUILDX_VERSION" { default="latest" }
 
