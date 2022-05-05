@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1.2
 
-ARG ALPINE_VERSION=latest
-ARG BUILDX_VERSION=latest
-ARG DOCKER_VERSION=latest
+ARG ALPINE_VERSION=3.15.4
+ARG BUILDX_VERSION=0.8.2
+ARG DOCKER_VERSION=20.10.14
 
 FROM docker/buildx-bin:$BUILDX_VERSION as buildx_bin
 
