@@ -59,7 +59,7 @@ jobs:
           GITHUB_EVENT: ${{ github.event_name }}
 
       - name: build
-        uses: docker/bake-action@v1.7.0
+        uses: docker/bake-action@v2.0.0
         with:
           files: |
             ./docker-bake.hcl
