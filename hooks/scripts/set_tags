@@ -1,7 +1,10 @@
 #!/bin/sh -x
 
-BUILDX_VERSION=$(curl -s 'https://api.github.com/repos/docker/buildx/releases' | jq -r '.[0].tag_name' | sed -e 's/^v//')
-DOCKER_VERSION=$(curl -s 'https://api.github.com/repos/moby/moby/releases' | jq -r '.[0].tag_name' | sed -e 's/^v//')
+# buildx tags look like `v0.35.0`; take the latest non-prerelease and drop the `v`.
+BUILDX_VERSION=$(curl -s 'https://api.github.com/repos/docker/buildx/releases' | jq -r '[ .[] | select(.prerelease == false and .draft == false) | .tag_name ][0]' | sed -e 's/^v//')
+# moby publishes several release series (docker-vX, client/vX, api/vX); Docker Engine
+# releases are tagged `docker-vX.Y.Z`, so filter to those and strip the `docker-v` prefix.
+DOCKER_VERSION=$(curl -s 'https://api.github.com/repos/moby/moby/releases' | jq -r '[ .[] | select(.prerelease == false and .draft == false) | .tag_name | select(startswith("docker-v")) ][0]' | sed -e 's/^docker-v//')
 DOCKER_TAG=docker_$DOCKER_VERSION-buildx_$BUILDX_VERSION
 
 DOCKER_LABEL=latest
@@ -37,5 +40,8 @@ target "ci_build" {
 }
 EOF
 
-echo "::set-output name=buildx_version::$BUILDX_VERSION"
-echo "::set-output name=docker_version::$DOCKER_VERSION"
+# Fall back to stdout when not running inside GitHub Actions (GITHUB_OUTPUT unset).
+{
+  echo "buildx_version=$BUILDX_VERSION"
+  echo "docker_version=$DOCKER_VERSION"
+} >> "${GITHUB_OUTPUT:-/dev/stdout}"
