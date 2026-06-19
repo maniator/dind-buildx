@@ -1,0 +1,47 @@
+name: Trivy vulnerability scan
+
+on:
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: trivy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t dind-scan:${{ github.sha }} .
+
+      # Informational: surface ALL fixable HIGH/CRITICAL findings (including the Go
+      # binaries that the upstream docker/buildx images bundle) without failing.
+      - name: Trivy report (all package types)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: dind-scan:${{ github.sha }}
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '0'
+
+      # Gate: fail only on OS-package vulnerabilities, which are what this image
+      # actually controls (the Alpine base + `apk upgrade`). Library/binary CVEs in
+      # upstream docker/buildx binaries can't be fixed here -- they're resolved by
+      # bumping to newer upstream releases (handled by the nightly fetch + dependabot).
+      - name: Trivy gate (OS packages only)
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: dind-scan:${{ github.sha }}
+          format: table
+          vuln-type: os
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'
