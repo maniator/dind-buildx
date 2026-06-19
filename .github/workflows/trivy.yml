@@ -1,0 +1,28 @@
+name: Trivy vulnerability scan
+
+on:
+  pull_request:
+    branches:
+      - main
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  scan:
+    name: trivy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build image
+        run: docker build -t dind-scan:${{ github.sha }} .
+
+      - name: Run Trivy scanner
+        uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          image-ref: dind-scan:${{ github.sha }}
+          format: table
+          severity: HIGH,CRITICAL
+          ignore-unfixed: true
+          exit-code: '1'

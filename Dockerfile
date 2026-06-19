@@ -9,7 +9,7 @@ FROM docker/buildx-bin:$BUILDX_VERSION as buildx_bin
 FROM alpine:$ALPINE_VERSION as buildx_strip
 
 COPY --from=buildx_bin /buildx /
-RUN apk upgrade --no-cache && apk add -U binutils && strip /buildx
+RUN apk upgrade --no-cache && apk add --no-cache binutils && strip /buildx
 
 FROM docker:$DOCKER_VERSION as buildx_image
 

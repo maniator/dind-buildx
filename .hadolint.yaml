@@ -1,0 +1,5 @@
+# The strip/runtime stages run `apk upgrade` and install unpinned packages on
+# purpose, so they always pull the latest security patches. That is incompatible
+# with pinning apk package versions, so ignore the version-pinning rule.
+ignored:
+  - DL3018  # Pin versions in apk add
